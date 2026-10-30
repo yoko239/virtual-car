@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Car Simulator</title>
+<style>
+body{
+font-family: Arial;
+text-align:center;
+margin-top:50px;
+}
+button{
+font-size:20px;
+padding:10px 20px;
+margin-top:20px;
+}
+button{
+padding:10px 20px;
+margin-top:20px;
+}
+#fanBarContainer{
+width:200px;
+height:20px;
+border:1px solid black;
+margin:auto;
+}
+#fanBar{
+width:20%;
+height:100%;
+background:skyblue;
+}
+#carContainer {
+position: relative;
+width: 320px;
+margin: 20px auto;
+}
+#carBody {
+position: relative;
+width: 280px;
+height: 130px;
+background: #2c3e50;
+border-radius: 30px;
+margin: auto;
+}
+#windshield {
+position: absolute;
+top: 15px;
+left: 70px;
+width: 140px;
+height: 40px;
+background: #87ceeb;
+border-radius: 10px;
+}
+#cabin {
+position: absolute;
+top: 65px;
+left: 70px;
+width: 140px;
+display: flex;
+justify-content: space-around;
+}
+#driverSeat,
+#passengerSeat {
+font-size: 26px;
+}
+#wheelLeft,
+#wheelRight {
+width: 55px;
+height: 55px;
+background: black;
+border-radius: 50%;
+position: absolute;
+bottom: -20px;
+}
+#wheelLeft {
+left: 25px;
+}
+#wheelRight {
+right: 25px;
+}
+#headLightLeft,
+#headLightRight{
+width:30px;
+height:30px;
+background:yellow;
+border-radius:50%;
+position:absolute;
+top:55px;
+z-index:10;
+}
+#headLightLeft{
+left:0px;
+}
+#headLightRight{
+right:0px;
+}
+#airFlow {
+position: absolute;
+top: 90px;
+left: 90px;
+color: #00bfff;
+animation: airflow 1s infinite alternate;
+}
+@keyframes airflow {
+from {
+transform: translateX(-5px);
+}
+to {
+transform: translateX(5px);
+}
+}
+</style>
+</head>
+<body>
+<h1>仮想車両</h1>
+<div id="carContainer">
+<div id="carBody">
+<div id="windshield"></div>
+<div id="cabin">
+<div id="driverSeat">🪑</div>
+<div id="passengerSeat">🪑</div>
+</div>
+<div id="airFlow">💨💨💨</div>
+</div>
+<div id="wheelLeft"></div>
+<div id="wheelRight"></div>
+<div id="headLightLeft"></div>
+<div id="headLightRight"></div>
+</div>
+<h3 id="acLamp">⚫ AC</h3>
+<h2 id="acStatus">AC OFF</h2>
+<h3 id="temp">温度: 22℃</h3>
+<h3 id="fan">風量: 1</h3>
+<div id="fanBarContainer">
+<div id="fanBar"></div>
+</div>
+<h3 id="autoLamp">⚫ AUTO</h3>
+<h3 id="autoMode">AUTO: OFF</h3>
+<h3 id="airMode">空調: 外気導入</h3>
+<h3 id="seatHeater">シートヒーター: OFF</h3>
+<button onclick="tempDown()">－</button>
+<button onclick="tempUp()">＋</button>
+<button onclick="fanDown()">FAN -</button>
+<button onclick="fanUp()">FAN +</button>
+<button onclick="toggleAuto()">
+AUTO
+</button>
+<button onclick="toggleAirMode()">
+内気/外気
+</button>
+<button onclick="toggleSeatHeater()">
+シートヒーター
+</button>
+<button onclick="toggleAC()">
+AC ON/OFF
+</button>
+<script>
+let acOn = false;
+let temperature = 22;
+let fanSpeed = 1;
+let autoMode = false;
+let recirculation = false;
+let seatHeater = false;
+function toggleAC() {
+acOn = !acOn;
+if (acOn) {
+document.getElementById("acStatus").innerHTML = "AC ON"
+document.getElementById("acStatus").style.color = "blue";
+document.getElementById("carBody").style.background =
+"#0f52ba";
+document.getElementById("carBody").style.boxShadow =
+"0 0 30px #00bfff";
+document.getElementById("acLamp").innerHTML =
+"🔵 AC";
+document.getElementById("headLightLeft").style.boxShadow =
+"0 0 20px yellow";
+document.getElementById("headLightRight").style.boxShadow =
+"0 0 20px yellow";
+document.getElementById("headLightLeft").style.background =
+"yellow";
+document.getElementById("headLightRight").style.background =
+"yellow";
+} else {
+document.getElementById("acStatus").innerHTML = "AC OFF";
+document.getElementById("acStatus").style.color = "green";
+document.getElementById("carBody").style.background =
+"#2c3e50";
+document.getElementById("carBody").style.boxShadow =
+"none";
+document.getElementById("acLamp").innerHTML =
+"⚫ AC";
+document.getElementById("headLightLeft").style.boxShadow =
+"none";
+document.getElementById("headLightRight").style.boxShadow =
+"none";
+document.getElementById("headLightLeft").style.background =
+"gray";
+document.getElementById("headLightRight").style.background =
+"gray";
+}
+}
+function setAC(state) {
+if (state === acOn) {
+return;
+}
+toggleAC();
+}
+function receiveCommand(command) {
+if (command === "AC_ON") {
+setAC(true);
+}
+if (command === "AC_OFF") {
+setAC(false);
+}
+if (command === "AUTO_ON") {
+autoMode = false;
+toggleAUTO();
+}
+if (command === "HEATER_ON") {
+seatHeater = false;
+toggleSeatHeater();
+}
+}
+function receiveCommand(command) {
+if (command === "AC_ON") {
+setAC(true);
+}
+if (command === "AC_OFF") {
+setAC(false);
+}
+if (command === "AUTO_ON") {
+autoMode = false;
+toggleAUTO();
+}
+if (command === "HEATER_ON") {
+seatHeater = false;
+toggleSeatHeater();
+}
+}
+window.receiveCommand = receiveCommand;
+function tempUp() {
+temperature++;
+document.getElementById("temp").innerHTML =
+"温度: " + temperature + "℃";
+}
+function tempDown() {
+temperature--;
+document.getElementById("temp").innerHTML =
+"温度: " + temperature + "℃";
+}
+function fanUp() {
+if (fanSpeed < 5) {
+fanSpeed++;
+document.getElementById("fanBar").style.width =
+(fanSpeed * 20) + "%";
+}
+document.getElementById("fan").innerHTML =
+"風量: " + fanSpeed;
+let wind = "";
+for(let i = 0; i < fanSpeed; i++) {
+wind += "💨";
+}
+document.getElementById("airFlow").innerHTML =
+wind;
+}
+function fanDown() {
+if (fanSpeed > 1) {
+fanSpeed--;
+}
+document.getElementById("fan").innerHTML =
+"風量: " + fanSpeed;
+document.getElementById("fanBar").style.width =
+(fanSpeed * 20) + "%";
+let wind = "";
+for(let i = 0; i < fanSpeed; i++) {
+wind += "💨";
+}
+document.getElementById("airFlow").innerHTML =
+wind;
+}
+function toggleAuto() {
+autoMode = !autoMode;
+if (autoMode) {
+document.getElementById("autoMode").innerHTML =
+"AUTO: ON";
+document.getElementById("autoLamp").innerHTML =
+"🟡 AUTO";
+setFanLevel(3);
+document.getElementById("fan").innerHTML =
+"風量: " + fanSpeed;
+}
+else {
+document.getElementById("autoMode").innerHTML =
+"AUTO: OFF";
+document.getElementById("autoLamp").innerHTML =
+"⚫ AUTO";
+}
+}
+function setAUTO(state) {
+if (state === autoMode) {
+return;
+}
+toggleAuto();
+}
+function setFanLevel(level) {
+if (level < 1) level = 1;
+if (level > 5) level = 5;
+fanSpeed = level;
+document.getElementById("fan").innerHTML =
+"風量: " + fanSpeed;
+document.getElementById("fanBar").style.width =
+(fanSpeed * 20) + "%";
+let wind = "";
+for(let i = 0; i < fanSpeed; i++) {
+wind += "💨";
+}
+document.getElementById("airFlow").innerHTML =
+wind;
+}
+function toggleAirMode() {
+recirculation = !recirculation;
+if (recirculation) {
+document.getElementById("airMode").innerHTML =
+"空調: 内気循環";
+} else {
+document.getElementById("airMode").innerHTML =
+"空調: 外気導入";
+}
+}
+function setRecirc(state) {
+if (state === recirculation) {
+return;
+}
+toggleAirMode();
+}
+function toggleSeatHeater() {
+seatHeater = !seatHeater;
+if (seatHeater) {
+document.getElementById("seatHeater").innerHTML =
+"シートヒーター: ON";
+document.getElementById("driverSeat").innerHTML = "🔥";
+document.getElementById("passengerSeat").innerHTML = "🔥";
+} else {
+document.getElementById("seatHeater").innerHTML =
+"シートヒーター: OFF";
+document.getElementById("driverSeat").innerHTML = "🪑";
+document.getElementById("passengerSeat").innerHTML = "🪑";
+}
+}
+function setSeatHeater(state) {
+if (state === seatHeater) {
+return;
+}
+toggleSeatHeater();
+}
+window.addEventListener("message", function(event) {
+console.log("message received");
+const data = event.data;
+// AC
+if (data.ac !== undefined) {
+setAC(data.ac);
+}
+// AUTO
+if (data.auto !== undefined) {
+setAUTO(data.auto);
+}
+// 内外気
+if (data.recirculation !== undefined) {
+setRecirc(data.recirculation);
+}
+// シートヒーター
+if (data.seatHeater !== undefined) {
+setSeatHeater(data.seatHeater);
+}
+// 風量
+if (data.fanSpeed !== undefined) {
+setFanLevel(data.fanSpeed);
+}
+console.log(data);
+});
+</script> 
+</body>
+</html>
