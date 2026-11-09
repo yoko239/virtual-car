@@ -356,6 +356,15 @@ toggleSeatHeater();
 window.addEventListener("message", function(event) {
 console.log("message received");
 const data = event.data;
+if (data === "auto") {
+setAUTO(true);
+}
+if (data === "recirc") {
+setRecirc(true);
+}
+if (data === "heater") {
+setSeatHeater(true);
+}
 // AC
 if (data.ac !== undefined) {
 setAC(data.ac);
