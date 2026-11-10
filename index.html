@@ -387,6 +387,24 @@ setFanLevel(data.fanSpeed);
 }
 console.log(data);
 });
+window.onload = function () {
+const params = new URLSearchParams(window.location.search);
+const command = params.get("command");
+console.log("command=", command);
+if (command === "auto") {
+console.log("AUTO detected");
+setAUTO(true);
+}
+if (command === "recirc") {
+setRecirc(true);
+}
+if (command === "heater") {
+setSeatHeater(true);
+}
+if (command === "defrost") {
+setDefrost(true);
+}
+};
 </script> 
 </body>
 </html>
