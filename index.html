@@ -406,5 +406,36 @@ setDefrost(true);
 }
 };
 </script> 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyADtvui8z1U6s08jm0Mth-2jtrzLAgykvE",
+  authDomain: "car-cool-jkw8wv.firebaseapp.com",
+  projectId: "car-cool-jkw8wv",
+  storageBucket: "car-cool-jkw8wv.firebasestorage.app",
+  messagingSenderId: "322542975438",
+  appId: "1:322542975438:web:74e4d0e560efc82dfbd39f"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+onSnapshot(doc(db, "vehicleState", "current"), (docSnap) => {
+  const data = docSnap.data();
+  if (!data) return;
+  if (data.acOn !== undefined) {
+    setAC(data.acOn);
+  }
+  if (data.autoMode !== undefined) {
+    setAUTO(data.autoMode);
+  }
+  if (data.recirc !== undefined) {
+    setRecirc(data.recirc);
+  }
+  if (data.heater !== undefined) {
+    setSeatHeater(data.heater);
+  }
+  console.log("Firebase updated:", data);
+});
+</script>
 </body>
 </html>
