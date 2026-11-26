@@ -434,6 +434,10 @@ onSnapshot(doc(db, "vehicleState", "current"), (docSnap) => {
   if (data.heater !== undefined) {
     setSeatHeater(data.heater);
   }
+  if (data.temperature !== undefined) {
+  document.getElementById("temp").textContent =
+    "温度: " + data.temperature + "℃";
+}
   console.log("Firebase updated:", data);
 });
 </script>
